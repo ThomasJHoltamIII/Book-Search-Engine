@@ -1,6 +1,6 @@
 const { User } = require('../models');
-const { signToken, AuthenticationError } = require('../utils/auth');
-
+const { signToken } = require('../utils/auth');
+const { AuthenticationError } = require('apollo-server-express');
 
 const resolvers = {
   Query: {
@@ -21,10 +21,13 @@ const resolvers = {
       if (!user) {
         throw new AuthenticationError('Incorrect credentials');
       }
+
       const correctPw = await user.isCorrectPassword(password);
+
       if (!correctPw) {
         throw new AuthenticationError('Incorrect credentials');
       }
+
       const token = signToken(user);
       return { token, user };
     },
@@ -60,4 +63,5 @@ const resolvers = {
 };
 
 module.exports = resolvers;
+
 
